@@ -32,5 +32,5 @@ class wsreg_Conv2D(tf.keras.layers.Layer):
         k = (k - tf.reduce_mean(k))/(tf.math.reduce_std(k) + 1e-5)
         return k
 ```
-## GN+WS
+## WS+GN
 
