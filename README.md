@@ -1,10 +1,9 @@
 # WS-with-BN-GN-in-P2P
-用tensorflow2實現weight standardization,為了訓練方便將其建立成keras layer。 \
 使用前請先安裝`tensorflow_addons`
 ```
 ! pip install tensorflow-addons
 ```
-
+用tensorflow2實現weight standardization,為了訓練方便將其建立成keras layer。 
 ``` python
 import tensorflow_addons as tfa
 import tensorflow as tf
