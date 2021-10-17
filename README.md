@@ -31,5 +31,34 @@ class wsreg_Conv2D(tf.keras.layers.Layer):
         k = (k - tf.reduce_mean(k))/(tf.math.reduce_std(k) + 1e-5)
         return k
 ```
-## GN+WS
+或是(來源：https://stackoverflow.com/questions/66305623/group-normalization-and-weight-standardization-in-keras)
+``` python
+class WSConv2D(tf.keras.layers.Conv2D):
+    def __init__(self, *args, **kwargs):
+        super(WSConv2D, self).__init__(kernel_initializer="he_normal", *args, **kwargs)
+
+    def standardize_weight(self, weight, eps):
+
+        mean = tf.math.reduce_mean(weight, axis=(0, 1, 2), keepdims=True)
+        var = tf.math.reduce_variance(weight, axis=(0, 1, 2), keepdims=True)
+        fan_in = np.prod(weight.shape[:-1])
+        gain = self.add_weight(
+            name="gain",
+            shape=(weight.shape[-1],),
+            initializer="ones",
+            trainable=True,
+            dtype=self.dtype,
+        )
+        scale = (
+            tf.math.rsqrt(
+                tf.math.maximum(var * fan_in, tf.convert_to_tensor(eps, dtype=self.dtype))
+            )
+            * gain
+        )
+        return weight * scale - (mean * scale)
+
+    def call(self, inputs, eps=1e-4):
+        self.kernel.assign(self.standardize_weight(self.kernel, eps))
+        return super().call(inputs)
+```
 
