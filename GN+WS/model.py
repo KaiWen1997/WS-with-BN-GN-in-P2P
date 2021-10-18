@@ -83,21 +83,21 @@ class build_generator(tf.keras.layers.Layer):
         input_layer = tf.keras.Input(shape=img_shape, name='data')
         # down C1~C6
         c1 = wsreg_Conv2D(kernel_shape=[3,3,1,gt])(input_layer) #512
-        c1 = tf.keras.layers.BatchNormalization()(c1)
+        c1 = tfa.layers.GroupNormalization()(c1)
         d1 = pool_Conv2D(kernel_shape=[3,3,gt,gt])(c1)          #256
-        d1 = tf.keras.layers.BatchNormalization()(d1)
+        d1 = tfa.layers.GroupNormalization()(d1)
         c2 = wsreg_Conv2D(kernel_shape=[3,3,gt,gt*2])(d1)       #256
-        c2 = tf.keras.layers.BatchNormalization()(c2)
+        c2 = tfa.layers.GroupNormalization()(c2)
         d2 = pool_Conv2D(kernel_shape=[3,3,gt*2,gt*2])(c2)      #128
-        d2 = tf.keras.layers.BatchNormalization()(d2)
+        d2 = tfa.layers.GroupNormalization()(d2)
         c3 = wsreg_Conv2D(kernel_shape=[3,3,gt*2,gt*4])(d2)     #128
-        c3 = tf.keras.layers.BatchNormalization()(c3)
+        c3 = tfa.layers.GroupNormalization()(c3)
         d3 = pool_Conv2D(kernel_shape=[3,3,gt*4,gt*4])(c3)      #64
-        d3 = tf.keras.layers.BatchNormalization()(d3)
+        d3 = tfa.layers.GroupNormalization()(d3)
         c4 = wsreg_Conv2D(kernel_shape=[3,3,gt*4,gt*8])(d3)     #64
-        c4 = tf.keras.layers.BatchNormalization()(c4)
+        c4 = tfa.layers.GroupNormalization()(c4)
         d4 = pool_Conv2D(kernel_shape=[3,3,gt*8,gt*8])(c4)      #32
-        d4 = tf.keras.layers.BatchNormalization()(d4)
+        d4 = tfa.layers.GroupNormalization()(d4)
         
         # UP
         u = deconv2d(d4,c4,gt*8)                                  #64
@@ -129,17 +129,17 @@ class build_discriminator(tf.keras.layers.Layer):
         combined_imgs = tf.keras.layers.Concatenate(axis=-1)([img_B, img_E])
 
         x = wsreg_Conv2D(kernel_shape=[3,3,2,gt])(combined_imgs) #512
-        x = tf.keras.layers.BatchNormalization()(x)
+        x = tfa.layers.GroupNormalization()(x)
         x = pool_Conv2D(kernel_shape=[3,3,gt,gt])(x)          #256
-        x = tf.keras.layers.BatchNormalization()(x)
+        x = tfa.layers.GroupNormalization()(x)
         x = wsreg_Conv2D(kernel_shape=[3,3,gt,gt*2])(x)       #256
-        x = tf.keras.layers.BatchNormalization()(x)
+        x = tfa.layers.GroupNormalization()(x)
         x = pool_Conv2D(kernel_shape=[3,3,gt*2,gt*2])(x)      #128
-        x = tf.keras.layers.BatchNormalization()(x)
+        x = tfa.layers.GroupNormalization()(x)
         x = wsreg_Conv2D(kernel_shape=[3,3,gt*2,gt*4])(x)     #128
-        x = tf.keras.layers.BatchNormalization()(x)
+        x = tfa.layers.GroupNormalization()(x)
         x = pool_Conv2D(kernel_shape=[3,3,gt*4,gt*4])(x)      #64
-        x = tf.keras.layers.BatchNormalization()(x)
+        x = tfa.layers.GroupNormalization()(x)
         x = wsreg_Conv2D(kernel_shape=[3,3,gt*4,gt*8])(x)     #64
         x = tfa.layers.GroupNormalization()(x)
 
